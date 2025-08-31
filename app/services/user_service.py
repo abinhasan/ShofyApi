@@ -4,8 +4,7 @@ from app.core.security import hash_password, verify_password, create_access_toke
 from app.models.user import User
 
 def register_user(db: Session, username: str, password: str) -> User:
-    existing = crud_user.get_user_by_username(db, username)
-    if existing:
+    if crud_user.get_user_by_username(db, username):
         raise ValueError("Username already exists")
     hashed_pw = hash_password(password)
     return crud_user.create_user(db, username, hashed_pw)
@@ -16,4 +15,3 @@ def authenticate_user(db: Session, username: str, password: str):
         return None
     token = create_access_token({"sub": str(user.id)})
     return {"access_token": token, "token_type": "bearer"}
- 
